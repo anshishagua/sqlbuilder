@@ -15,6 +15,14 @@ public class Or implements Predicate {
         this.right = right;
     }
 
+    public Predicate getLeft() {
+        return left;
+    }
+
+    public Predicate getRight() {
+        return right;
+    }
+
     @Override
     public String toSQL() {
         StringBuilder builder = new StringBuilder();

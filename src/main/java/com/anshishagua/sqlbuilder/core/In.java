@@ -1,6 +1,8 @@
 package com.anshishagua.sqlbuilder.core;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * User: lixiao
@@ -11,7 +13,16 @@ import java.util.List;
 public class In implements Predicate {
     private String expression;
 
-    private List<String> inList;
+    private List<String> inList = new ArrayList<>();
+    private Select subSelect;
+
+    public In(String expression, Select subSelect) {
+        Objects.requireNonNull(expression);
+        Objects.requireNonNull(subSelect);
+
+        this.expression = expression;
+        this.subSelect = subSelect;
+    }
 
     public In(String expression, List<String> inList) {
         this.expression = expression;
@@ -22,13 +33,17 @@ public class In implements Predicate {
     public String toSQL() {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(expression).append(" IN(");
+        builder.append(expression).append(" IN (");
 
-        for (int i = 0;i < inList.size(); ++i) {
-            if (i == 0) {
-                builder.append(inList.get(i));
-            } else {
-                builder.append(", ").append(inList.get(i));
+        if (subSelect != null) {
+            builder.append(subSelect.toSQL());
+        } else {
+            for (int i = 0;i < inList.size(); ++i) {
+                if (i == 0) {
+                    builder.append(inList.get(i));
+                } else {
+                    builder.append(", ").append(inList.get(i));
+                }
             }
         }
 

@@ -1,6 +1,7 @@
 package com.anshishagua.sqlbuilder.core;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: lixiao
@@ -21,6 +22,12 @@ public class PredicateBuilder {
 
     public Predicate build() {
         return predicate;
+    }
+
+    public PredicateBuilder basicPredicate(Predicate predicate) {
+        this.predicate = predicate;
+
+        return this;
     }
 
     public PredicateBuilder basicPredicate(String expression) {
@@ -49,6 +56,18 @@ public class PredicateBuilder {
 
     public PredicateBuilder or(String expression) {
         this.predicate = new Or(this.predicate, new BasicPredicate(expression));
+
+        return this;
+    }
+
+    public PredicateBuilder notIn(String expression, List<String> notInList) {
+        this.predicate = new And(this.predicate, new NotIn(expression, notInList));
+
+        return this;
+    }
+
+    public PredicateBuilder in(String expression, List<String> inList) {
+        this.predicate = new And(this.predicate, new In(expression, inList));
 
         return this;
     }

@@ -3,6 +3,7 @@ package com.anshishagua.sqlbuilder.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * User: lixiao
@@ -72,6 +73,17 @@ public class SelectBuilder {
         return this;
     }
 
+    public SelectBuilder where(Predicate predicate) {
+        if (predicateBuilder.getPredicate() == null) {
+            predicateBuilder.basicPredicate(predicate);
+        }
+        else {
+            predicateBuilder.and(predicate);
+        }
+
+        return this;
+    }
+
     public SelectBuilder where(String expression) {
         if (predicateBuilder.getPredicate() == null) {
             predicateBuilder.basicPredicate(expression);
@@ -83,14 +95,26 @@ public class SelectBuilder {
         return this;
     }
 
+    public SelectBuilder or(Predicate predicate) {
+        predicateBuilder.or(predicate);
+
+        return this;
+    }
+
     public SelectBuilder or(String expression) {
         predicateBuilder.or(expression);
 
         return this;
     }
 
+    public SelectBuilder and(Predicate predicate) {
+        predicateBuilder.and(predicate);
+
+        return this;
+    }
+
     public SelectBuilder and(String expression) {
-        predicateBuilder.or(expression);
+        predicateBuilder.and(expression);
 
         return this;
     }
@@ -131,6 +155,34 @@ public class SelectBuilder {
         }
     }
 
+    private List<String> toPredicates(Predicate predicate) {
+        Objects.requireNonNull(predicate);
+
+        List<String> list = new ArrayList<>();
+
+        toPredicates(predicate, list);
+
+        return list;
+    }
+
+    private void toPredicates(Predicate predicate, List<String> predicates) {
+        if (predicate == null) {
+            return;
+        }
+
+        if (predicate instanceof And) {
+            predicates.add(0, String.format("%-11s%s", "AND", ((And) predicate).getRight().toSQL()));
+            toPredicates(((And) predicate).getLeft(), predicates);
+        } else if (predicate instanceof Or) {
+            predicates.add(0, String.format("%-11s%s", "OR ", ((Or) predicate).getRight().toSQL()));
+            toPredicates(((Or) predicate).getLeft(), predicates);
+        } else {
+            predicates.add(0, predicate.toSQL());
+
+            return;
+        }
+    }
+
     public String format() {
         StringBuilder builder = new StringBuilder();
 
@@ -155,9 +207,13 @@ public class SelectBuilder {
         }
 
         if (predicateBuilder.getPredicate() != null) {
-            builder.append(String.format("%-11s", "WHERE"))
-                    .append(predicateBuilder.toString())
-                    .append("\n");
+            List<String> list = toPredicates(predicateBuilder.getPredicate());
+
+            builder.append(String.format("%-11s", "WHERE"));
+
+            for (String predicate : list) {
+                builder.append(predicate).append("\n");
+            }
         }
 
         if (!groupBys.isEmpty()) {
