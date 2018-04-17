@@ -6,5 +6,9 @@ package com.anshishagua.sqlbuilder.core;
  * Time: 下午5:47
  */
 
-public class Select {
+public class Select implements SQL {
+    @Override
+    public String toSQL() {
+        return null;
+    }
 }

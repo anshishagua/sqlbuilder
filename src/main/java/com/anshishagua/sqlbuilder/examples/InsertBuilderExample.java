@@ -16,6 +16,6 @@ public class InsertBuilderExample {
                 .set("name", "benben")
                 .set("age", "333");
 
-        System.out.println(insertBuilder.toSQL());
+        System.out.println(insertBuilder.build());
     }
 }

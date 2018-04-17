@@ -1,6 +1,5 @@
 package com.anshishagua.sqlbuilder.core;
 
-import java.sql.SQLType;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -42,39 +41,7 @@ public class InsertBuilder {
         return this;
     }
 
-    public String toSQL() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("INSERT INTO ").append(tableName).append("(");
-
-        Iterator<String> iterator = columns.iterator();
-
-        while (iterator.hasNext()) {
-            builder.append(iterator.next());
-
-            if (iterator.hasNext()) {
-                builder.append(", ");
-            }
-        }
-
-        builder.append(") VALUES(");
-
-        iterator = values.iterator();
-
-        while (iterator.hasNext()) {
-            builder.append(iterator.next());
-
-            if (iterator.hasNext()) {
-                builder.append(", ");
-            }
-        }
-
-        builder.append(")");
-
-        return builder.toString();
-    }
-
-    @Override
-    public String toString() {
-        return toSQL();
+    public Insert build() {
+        return new Insert(tableName, columns, values);
     }
 }

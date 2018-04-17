@@ -18,6 +18,6 @@ public class UpdateBuilderExample {
                 .where("id = 111")
                 .where("age = 222");
 
-        System.out.println(updateBuilder);
+        System.out.println(updateBuilder.build().toSQL());
     }
 }

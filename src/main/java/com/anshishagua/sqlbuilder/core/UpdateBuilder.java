@@ -52,6 +52,10 @@ public class UpdateBuilder {
         return this;
     }
 
+    public Update build() {
+        return new Update(tableName, columns, values, predicateBuilder.build());
+    }
+
     public String toSQL() {
         StringBuilder builder = new StringBuilder();
 
