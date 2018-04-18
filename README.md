@@ -84,7 +84,7 @@ System.out.println(update.toSQL());
 
 ## DELETE
 
-使用DeleteBuilder
+使用 `DeleteBuilder`
 
 ```java
         Delete delete = new DeleteBuilder()
