@@ -11,7 +11,16 @@ SQLBuilder支持如下的SQL语句生成:
 
 ## SELECT
 
-使用SelectBuilder
+使用 `SelectBuilder` 支持操作符:
+
+* 算术运算符 +, -, *, /, %
+* 布尔表达式 AND, OR, NOT
+* 比较运算 >, >=, <, <=, =, <>, IS NULL, IS NOT NULL, ...
+* CASE WHEN
+* 函数调用表达式 SUM, COUNT, AVG, MAX, MIN, ...
+* 子查询
+* ......
+
 
 ```java
 Select select = new SelectBuilder()
@@ -36,12 +45,14 @@ Select select = new SelectBuilder()
                 .build();
 
 
-        System.out.println(select.toSQL());
+System.out.println(select.toSQL());
+System.out.println(select.format());
+
 ```
 
 ## INSERT
 
-使用InsertBuilder
+使用 `InsertBuilder`
 
 ```java
 Insert insert = new InsertBuilder()
@@ -56,7 +67,7 @@ Insert insert = new InsertBuilder()
 
 ## UPDATE
 
-使用UpdateBuilder
+使用 `UpdateBuilder`
 
 ```java
 Update update = new UpdateBuilder()
@@ -68,7 +79,7 @@ Update update = new UpdateBuilder()
                 .where("age = 222")
                 .build();
 
-        System.out.println(update.toSQL()); 
+System.out.println(update.toSQL()); 
 ```
 
 ## DELETE
@@ -81,12 +92,12 @@ Update update = new UpdateBuilder()
                 .where("id = 111")
                 .where("age = 222").build();
 
-        System.out.println(delete.toSQL());
+System.out.println(delete.toSQL());
 ```
 
 ## CREATE
 
-使用CreateBuilder
+使用 `CreateBuilder`
 
 ```java
 Create create = new CreateBuilder()
@@ -97,5 +108,5 @@ Create create = new CreateBuilder()
                 .column(new Column("name", JDBCType.VARCHAR, true, false, null, 1, 255))
                 .build();
 
-        System.out.println(create.toSQL());
+System.out.println(create.toSQL());
 ```
