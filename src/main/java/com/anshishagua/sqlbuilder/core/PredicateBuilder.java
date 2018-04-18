@@ -1,5 +1,18 @@
 package com.anshishagua.sqlbuilder.core;
 
+import com.anshishagua.sqlbuilder.core.bool.And;
+import com.anshishagua.sqlbuilder.core.bool.Or;
+import com.anshishagua.sqlbuilder.core.comparison.Between;
+import com.anshishagua.sqlbuilder.core.comparison.Equal;
+import com.anshishagua.sqlbuilder.core.comparison.GreaterThan;
+import com.anshishagua.sqlbuilder.core.comparison.GreaterThanOrEqual;
+import com.anshishagua.sqlbuilder.core.comparison.In;
+import com.anshishagua.sqlbuilder.core.comparison.LessThan;
+import com.anshishagua.sqlbuilder.core.comparison.LessThanOrEqual;
+import com.anshishagua.sqlbuilder.core.comparison.NotEqual;
+import com.anshishagua.sqlbuilder.core.comparison.NotIn;
+import com.anshishagua.sqlbuilder.core.expression.Expression;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,6 +81,48 @@ public class PredicateBuilder {
 
     public PredicateBuilder in(String expression, List<String> inList) {
         this.predicate = new And(this.predicate, new In(expression, inList));
+
+        return this;
+    }
+
+    public PredicateBuilder greaterThan(Expression left, Expression right) {
+        this.predicate = new And(this.predicate, new GreaterThan(left, right));
+
+        return this;
+    }
+
+    public PredicateBuilder greaterThanOrEqual(Expression left, Expression right) {
+        this.predicate = new And(this.predicate, new GreaterThanOrEqual(left, right));
+
+        return this;
+    }
+
+    public PredicateBuilder lessThan(Expression left, Expression right) {
+        this.predicate = new And(this.predicate, new LessThan(left, right));
+
+        return this;
+    }
+
+    public PredicateBuilder lessThanOrEqual(Expression left, Expression right) {
+        this.predicate = new And(this.predicate, new LessThanOrEqual(left, right));
+
+        return this;
+    }
+
+    public PredicateBuilder equal(Expression left, Expression right) {
+        this.predicate = new And(this.predicate, new Equal(left, right));
+
+        return this;
+    }
+
+    public PredicateBuilder notEqual(Expression left, Expression right) {
+        this.predicate = new And(this.predicate, new NotEqual(left, right));
+
+        return this;
+    }
+
+    public PredicateBuilder between(Expression expression, Expression min, Expression max) {
+        this.predicate = new Between(expression, min, max);
 
         return this;
     }

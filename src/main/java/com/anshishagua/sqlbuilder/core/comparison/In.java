@@ -1,4 +1,8 @@
-package com.anshishagua.sqlbuilder.core;
+package com.anshishagua.sqlbuilder.core.comparison;
+
+import com.anshishagua.sqlbuilder.core.Predicate;
+import com.anshishagua.sqlbuilder.core.PredicatePriority;
+import com.anshishagua.sqlbuilder.core.Select;
 
 import java.util.ArrayList;
 import java.util.List;

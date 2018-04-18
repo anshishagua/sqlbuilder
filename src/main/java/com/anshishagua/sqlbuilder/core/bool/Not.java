@@ -1,4 +1,7 @@
-package com.anshishagua.sqlbuilder.core;
+package com.anshishagua.sqlbuilder.core.bool;
+
+import com.anshishagua.sqlbuilder.core.Predicate;
+import com.anshishagua.sqlbuilder.core.PredicatePriority;
 
 /**
  * User: lixiao
@@ -11,6 +14,10 @@ public class Not implements Predicate {
 
     public Not(Predicate predicate) {
         this.predicate = predicate;
+    }
+
+    public static Not of(Predicate predicate) {
+        return new Not(predicate);
     }
 
     @Override

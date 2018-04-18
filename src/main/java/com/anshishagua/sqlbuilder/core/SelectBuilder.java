@@ -1,9 +1,9 @@
 package com.anshishagua.sqlbuilder.core;
 
+import com.anshishagua.sqlbuilder.core.expression.Limit;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * User: lixiao
@@ -12,14 +12,14 @@ import java.util.Objects;
  */
 
 public class SelectBuilder {
-    private static final String SPACES = "           ";
-
     private List<String> selectFields = new ArrayList<>();
     private List<String> fromTables = new ArrayList<>();
     private List<Join> joinClauses = new ArrayList<>();
     private PredicateBuilder predicateBuilder = new PredicateBuilder();
     private List<String> orderBys = new ArrayList<>();
     private List<String> groupBys = new ArrayList<>();
+    private PredicateBuilder havingBuilder = new PredicateBuilder();
+    private Limit limit = null;
 
     public SelectBuilder() {
 
@@ -33,6 +33,12 @@ public class SelectBuilder {
 
     public SelectBuilder select(String expression) {
         selectFields.add(expression);
+
+        return this;
+    }
+
+    public SelectBuilder selectDistinct(String expression) {
+        selectFields.add(String.format("DISTINCT %s", expression));
 
         return this;
     }
@@ -136,188 +142,29 @@ public class SelectBuilder {
         return this;
     }
 
-    private void iterate(StringBuilder builder, Iterator<String> iterator, String joiner) {
-        boolean first = true;
-
-        while (iterator.hasNext()) {
-            if (first) {
-                builder.append(iterator.next());
-                first = false;
-            } else {
-                builder.append(SPACES).append(iterator.next());
-            }
-
-            if (iterator.hasNext()) {
-                builder.append(",");
-            }
-
-            builder.append("\n");
-        }
-    }
-
-    private List<String> toPredicates(Predicate predicate) {
-        Objects.requireNonNull(predicate);
-
-        List<String> list = new ArrayList<>();
-
-        toPredicates(predicate, list);
-
-        return list;
-    }
-
-    private void toPredicates(Predicate predicate, List<String> predicates) {
-        if (predicate == null) {
-            return;
-        }
-
-        if (predicate instanceof And) {
-            predicates.add(0, String.format("%-11s%s", "AND", ((And) predicate).getRight().toSQL()));
-            toPredicates(((And) predicate).getLeft(), predicates);
-        } else if (predicate instanceof Or) {
-            predicates.add(0, String.format("%-11s%s", "OR ", ((Or) predicate).getRight().toSQL()));
-            toPredicates(((Or) predicate).getLeft(), predicates);
+    public SelectBuilder having(String expression) {
+        if (havingBuilder.getPredicate() == null) {
+            havingBuilder.basicPredicate(expression);
         } else {
-            predicates.add(0, predicate.toSQL());
-
-            return;
+            havingBuilder.and(expression);
         }
+
+        return this;
     }
 
-    public String format() {
-        StringBuilder builder = new StringBuilder();
+    public SelectBuilder limit(long limit) {
+        this.limit = new Limit(limit);
 
-        builder.append(String.format("%-11s", "SELECT"));
-
-        Iterator<String> iterator = selectFields.iterator();
-        iterate(builder, iterator, ",");
-
-        builder.append(String.format("%-11s", "FROM"));
-
-        iterator = fromTables.iterator();
-
-        iterate(builder, iterator, ",");
-
-        if (!joinClauses.isEmpty()) {
-            for (Join joinClause : joinClauses) {
-                builder.append(String.format("%-11s", joinClause.getJoinType().toSQL()))
-                        .append(joinClause.getTableName())
-                        .append(" ON (")
-                        .append(joinClause.getOnConditions().toSQL()).append(")\n");
-            }
-        }
-
-        if (predicateBuilder.getPredicate() != null) {
-            List<String> list = toPredicates(predicateBuilder.getPredicate());
-
-            builder.append(String.format("%-11s", "WHERE"));
-
-            for (String predicate : list) {
-                builder.append(predicate).append("\n");
-            }
-        }
-
-        if (!groupBys.isEmpty()) {
-            builder.append(String.format("%-11s", "GROUP BY"));
-
-            iterator = groupBys.iterator();
-
-            iterate(builder, iterator, ",");
-        }
-
-        if (!orderBys.isEmpty()) {
-            builder.append(String.format("%-11s", "ORDER BY"));
-
-            iterator = orderBys.iterator();
-
-            iterate(builder, iterator, ",");
-        }
-
-        return builder.toString();
+        return this;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
+    public SelectBuilder limit(long limit, long offset) {
+        this.limit = new Limit(limit, offset);
 
-        builder.append("SELECT ");
+        return this;
+    }
 
-        Iterator<String> iterator = selectFields.iterator();
-
-        while (iterator.hasNext()) {
-            builder.append(iterator.next());
-
-            if (iterator.hasNext()) {
-                builder.append(", ");
-            }
-            else {
-                builder.append(" ");
-            }
-        }
-
-        builder.append("FROM ");
-
-        iterator = fromTables.iterator();
-
-        while (iterator.hasNext()) {
-            builder.append(iterator.next());
-
-            if (iterator.hasNext()) {
-                builder.append(", ");
-            }
-            else {
-                builder.append(" ");
-            }
-        }
-
-        if (!joinClauses.isEmpty()) {
-            for (Join joinClause : joinClauses) {
-                builder.append(joinClause.getJoinType().toSQL())
-                        .append(" ")
-                        .append(joinClause.getTableName())
-                        .append(" ON (")
-                        .append(joinClause.getOnConditions().toSQL()).append(") ");
-            }
-        }
-
-        if (predicateBuilder.getPredicate() != null) {
-            builder.append("WHERE ").append(predicateBuilder.toSQL());
-            builder.append(" ");
-        }
-
-        if (!groupBys.isEmpty()) {
-            builder.append("GROUP BY ");
-
-            iterator = groupBys.iterator();
-
-            while (iterator.hasNext()) {
-                builder.append(iterator.next());
-
-                if (iterator.hasNext()) {
-                    builder.append(", ");
-                }
-                else {
-                    builder.append(" ");
-                }
-            }
-        }
-
-        if (!orderBys.isEmpty()) {
-            builder.append("ORDER BY ");
-
-            iterator = orderBys.iterator();
-
-            while (iterator.hasNext()) {
-                builder.append(iterator.next());
-
-                if (iterator.hasNext()) {
-                    builder.append(", ");
-                }
-                else {
-                    builder.append(" ");
-                }
-            }
-        }
-
-        return builder.toString();
+    public Select build() {
+        return new Select(selectFields, fromTables, joinClauses, predicateBuilder.getPredicate(), orderBys, groupBys, havingBuilder.getPredicate(), limit);
     }
 }

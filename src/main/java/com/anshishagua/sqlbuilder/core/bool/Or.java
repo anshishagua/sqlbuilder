@@ -1,4 +1,7 @@
-package com.anshishagua.sqlbuilder.core;
+package com.anshishagua.sqlbuilder.core.bool;
+
+import com.anshishagua.sqlbuilder.core.Predicate;
+import com.anshishagua.sqlbuilder.core.PredicatePriority;
 
 /**
  * User: lixiao
