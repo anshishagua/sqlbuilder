@@ -1,6 +1,7 @@
 package com.anshishagua.sqlbuilder.examples;
 
 import com.anshishagua.sqlbuilder.core.Column;
+import com.anshishagua.sqlbuilder.core.Create;
 import com.anshishagua.sqlbuilder.core.CreateBuilder;
 
 import java.sql.JDBCType;
@@ -13,13 +14,14 @@ import java.sql.JDBCType;
 
 public class CreateTableExample {
     public static void main(String [] args) {
-        CreateBuilder createBuilder = new CreateBuilder()
+        Create create = new CreateBuilder()
                 .table("person")
                 .createIfNotExists(true)
                 .column("id", JDBCType.BIGINT)
                 .column("age", JDBCType.INTEGER)
-                .column(new Column("name", JDBCType.VARCHAR, true, false, null, 1, 255));
+                .column(new Column("name", JDBCType.VARCHAR, true, false, null, 1, 255))
+                .build();
 
-        System.out.println(createBuilder.build().toSQL());
+        System.out.println(create.toSQL());
     }
 }

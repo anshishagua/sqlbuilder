@@ -1,5 +1,6 @@
 package com.anshishagua.sqlbuilder.examples;
 
+import com.anshishagua.sqlbuilder.core.Delete;
 import com.anshishagua.sqlbuilder.core.DeleteBuilder;
 
 /**
@@ -10,11 +11,11 @@ import com.anshishagua.sqlbuilder.core.DeleteBuilder;
 
 public class DeleteTableExample {
     public static void main(String [] args) {
-        DeleteBuilder deleteBuilder = new DeleteBuilder()
+        Delete delete = new DeleteBuilder()
                 .table("person")
                 .where("id = 111")
-                .where("age = 222");
+                .where("age = 222").build();
 
-        System.out.println(deleteBuilder.build().toSQL());
+        System.out.println(delete.toSQL());
     }
 }

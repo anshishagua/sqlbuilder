@@ -2,6 +2,7 @@ package com.anshishagua.sqlbuilder.examples;
 
 import com.anshishagua.sqlbuilder.core.BasicPredicate;
 import com.anshishagua.sqlbuilder.core.JoinType;
+import com.anshishagua.sqlbuilder.core.Select;
 import com.anshishagua.sqlbuilder.core.comparison.Exists;
 import com.anshishagua.sqlbuilder.core.comparison.GreaterThan;
 import com.anshishagua.sqlbuilder.core.comparison.In;
@@ -24,11 +25,12 @@ import java.util.Arrays;
 
 public class SelectBuilderExample {
     public static void main(String [] args) {
-        SelectBuilder selectBuilder = new SelectBuilder()
-                .selectDistinct("a.id")
+        Select select = new SelectBuilder()
+                .select("a.id", "student_id")
                 .select("b")
                 .select("c")
-                .from("e", "fff").from("f")
+                .from("student", "a")
+                .from("course")
                 .join("g", JoinType.INNER_JOIN, new PredicateBuilder().basicPredicate("g.id = a.id").and("g.id > 10000").build())
                 .where("1 = 1")
                 .where("2 = 2")
@@ -41,8 +43,11 @@ public class SelectBuilderExample {
                 .orderBy("a", false)
                 .orderBy("b", true)
                 .having("COUNT(*) > 1").having("SUM(aaa) < 1")
-                .limit(122);
+                .limit(122)
+                .build();
 
-        System.out.println(selectBuilder.build().format());
+        System.out.println(select.toSQL());
+
+        System.out.println(select.format());
     }
 }

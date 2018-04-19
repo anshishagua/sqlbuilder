@@ -1,5 +1,6 @@
 package com.anshishagua.sqlbuilder.examples;
 
+import com.anshishagua.sqlbuilder.core.Update;
 import com.anshishagua.sqlbuilder.core.UpdateBuilder;
 
 /**
@@ -10,14 +11,15 @@ import com.anshishagua.sqlbuilder.core.UpdateBuilder;
 
 public class UpdateBuilderExample {
     public static void main(String [] args) {
-        UpdateBuilder updateBuilder = new UpdateBuilder()
+        Update update = new UpdateBuilder()
                 .table("person")
                 .set("id", "1")
                 .set("name", "benben")
                 .set("age", "21")
                 .where("id = 111")
-                .where("age = 222");
+                .where("age = 222")
+                .build();
 
-        System.out.println(updateBuilder.build().toSQL());
+        System.out.println(update.toSQL());
     }
 }

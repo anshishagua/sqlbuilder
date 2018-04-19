@@ -1,5 +1,6 @@
 package com.anshishagua.sqlbuilder.examples;
 
+import com.anshishagua.sqlbuilder.core.Insert;
 import com.anshishagua.sqlbuilder.core.InsertBuilder;
 
 /**
@@ -10,12 +11,13 @@ import com.anshishagua.sqlbuilder.core.InsertBuilder;
 
 public class InsertBuilderExample {
     public static void main(String [] args) {
-        InsertBuilder insertBuilder = new InsertBuilder()
+        Insert insert = new InsertBuilder()
                 .table("person")
                 .set("id", "1")
                 .set("name", "benben")
-                .set("age", "333");
+                .set("age", "333")
+                .build();
 
-        System.out.println(insertBuilder.build());
+        System.out.println(insert.toSQL());
     }
 }
